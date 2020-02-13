@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-import pandas as pd
+import csv
 
 img = cv2.imread('task2_2.png')
 
@@ -15,37 +15,27 @@ def mask(image):
 
      return(threshold_img)
 
-img1 = mask(img)
-imbinary = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-ret, thresh = cv2.threshold(imbinary, 127, 255, cv2.THRESH_BINARY)
+img_mask = mask(img)
+img_binary = cv2.cvtColor(img_mask, cv2.COLOR_BGR2GRAY)
+ret, thresh = cv2.threshold(img_binary, 127, 255, cv2.THRESH_BINARY)
 
 _, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-x_list = []
-y_list = []
 
 print("Number of contours = "+str(len(contours)))
-print(contours)
+# print(contours)
 
 for i in range(len(contours)):
      print(contours[i])
-     con = [int(str) for str in contours[i]]
-     print(con)
 
-
-
-     # print(contours[i], sep = ', ')
-     # print(contours[0][i])
-     # df = pd.DataFrame(contours[i])
-     # print(df.shape)
-     # df.head()
-     # df.to_csv("./a.csv")
-
-
-
+     with open("xy.csv", 'w') as file:
+          for j in contours[i]:
+               print(i[0])
+               writer = csv.writer(file, lineterminator = '\n')
+               writer.writerows(i)
 
 cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
 
-# cv2.imshow('Image', img)
-# cv2.imshow('Image BINARY', imbinary)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+cv2.imshow('Image', img)
+cv2.imshow('Image BINARY', img_binary)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
