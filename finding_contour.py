@@ -18,28 +18,38 @@ def mask(image):
 
      return(threshold_img)
 
-#make another
+#make mask image
 img_mask = mask(img)
+#make binary image
 img_binary = cv2.cvtColor(img_mask, cv2.COLOR_BGR2GRAY)
 ret, thresh = cv2.threshold(img_binary, 127, 255, cv2.THRESH_BINARY)
 
+#detect the edge of image
 _, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
+#show number of contours
 print("Number of contours = "+str(len(contours)))
-# print(contours)
 
+#roop for length of contours
 for i in range(len(contours)):
+     #show the contours to check
      print(contours[i])
-
+     #make csv file
      with open("xy.csv", 'w') as file:
+          #roop for contours
           for j in contours[i]:
+               #show coordinate
                print(j[0])
+
                writer = csv.writer(file, lineterminator = '\n')
                writer.writerows(j)
 
+#draw edge line
 cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
-
+#show original image
 cv2.imshow('Image', img)
+#show binary image
 cv2.imshow('Image BINARY', img_binary)
+
 cv2.waitKey(0)
 cv2.destroyAllWindows()
